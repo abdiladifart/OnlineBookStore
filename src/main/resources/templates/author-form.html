@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Author Form</title>
+</head>
+<body>
+
+<h2>Author Form</h2>
+
+<form th:object="${author}" th:action="@{/authors/new}" method="post">
+  <input type="hidden" th:field="*{id}">
+  Name: <input type="text" th:field="*{name}" required><br>
+  <input type="submit" value="Save">
+</form>
+
+<a th:href="@{/authors}">Back to Author List</a>
+
+</body>
+</html>

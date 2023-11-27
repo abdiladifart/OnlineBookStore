@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Publisher List</title>
+</head>
+<body>
+
+<h2>Publisher List</h2>
+
+<table border="1">
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Actions</th>
+    </tr>
+
+    <tr th:each="publisher : ${publishers}">
+        <td th:text="${publisher.id}"></td>
+        <td th:text="${publisher.name}"></td>
+        <td>
+            <a th:href="@{/publishers/edit/{id}(id=${publisher.id})}">Edit</a>
+            <a th:href="@{/publishers/delete/{id}(id=${publisher.id})}">Delete</a>
+        </td>
+    </tr>
+</table>
+
+<a th:href="@{/publishers/new}">Add New Publisher</a>
+
+</body>
+</html>
