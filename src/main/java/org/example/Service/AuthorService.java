@@ -55,5 +55,9 @@ public class AuthorService {
         authorRepository.deleteById(id);
     }
 
+    // Add a method to retrieve all authors with associated books
+    public List<Author> getAllAuthorsWithBooks() {
+        return authorRepository.findAllWithBooks();
+    }
 
 }

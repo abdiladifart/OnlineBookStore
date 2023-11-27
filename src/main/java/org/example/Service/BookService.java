@@ -28,8 +28,14 @@ public class BookService {
 
     // Retrieve all books
     public List<Book> getAllBooks() {
-        return bookRepository.findAll();
+        return bookRepository.findAllWithAuthors(); // Use the repository method for fetching books with authors
     }
+
+    public List<Book> searchBooks(String searchTerm) {
+        return bookRepository.findByTitleContainingIgnoreCaseOrAuthorsNameContainingIgnoreCase(searchTerm, searchTerm);
+    }
+
+
 
     // Retrieve a book by ID
     public Optional<Book> getBookById(Long id) {
@@ -107,6 +113,22 @@ public class BookService {
 //        return bookRepository.findAllWithAuthors(); // Make sure this method exists in your repository
 //    }
 
-
+    // Add a method to set authors for a book
+    public void setAuthorsForBook(Long bookId, List<Long> authorIds) {
+        Book book = bookRepository.findById(bookId).orElse(null);
+        if (book != null) {
+            Set<Author> authors = authorService.getAuthorsByIds(authorIds);
+            book.setAuthors(authors);
+            bookRepository.save(book);
+        }
     }
+    public List<Book> getBooksOrderedByTitle() {
+        // Use the Spring Data JPA repository method to get books ordered by title
+        return bookRepository.findAllByOrderByTitle();
+    }
+    public List<Book> getBooksOrderedById() {
+        // Use the Spring Data JPA repository method to get books ordered by ID
+        return bookRepository.findAllByOrderById();
+    }
+}
 

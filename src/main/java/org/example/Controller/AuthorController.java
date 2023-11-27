@@ -59,4 +59,13 @@ public class AuthorController {
         authorService.deleteAuthor(id);
         return "redirect:/authors";
     }
+
+    // Add a method to display the list of authors with associated books
+    @GetMapping("/all")
+    public String getAllAuthorsWithBooks(Model model) {
+        List<Author> authors = authorService.getAllAuthorsWithBooks();
+        model.addAttribute("authors", authors);
+        return "authors";
+    }
+
 }

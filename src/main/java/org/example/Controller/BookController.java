@@ -43,11 +43,17 @@ public class BookController {
 
     // Display all books
     @GetMapping
-    public String getAllBooks(Model model) {
-        List<Book> books = bookService.getAllBooks();
+    public String getAllBooks(Model model, @RequestParam(name = "search", required = false) String search) {
+        List<Book> books;
+        if (search != null && !search.isEmpty()) {
+            books = bookService.searchBooks(search);
+        } else {
+            books = bookService.getAllBooks();
+        }
         model.addAttribute("books", books);
         return "books";
     }
+
 
     // Display form for creating a new book
     @GetMapping("/new")
@@ -65,6 +71,8 @@ public class BookController {
         bookService.addAuthorsToBook(book.getId(), authorIds);
         bookService.setPublisherForBook(book.getId(), publisherId);
         bookService.createBook(book);
+        bookService.setAuthorsForBook(book.getId(), authorIds);
+
 
         String priceString = request.getParameter("price");
         if (priceString != null && !priceString.isEmpty()) {
@@ -129,6 +137,25 @@ public class BookController {
         // Redirect to the book list page or any other appropriate page
         return "redirect:/books";
     }
+    @GetMapping("/order")
+    public String orderBooks(Model model, @RequestParam(name = "order", required = false) String order) {
+        List<Book> orderedBooks;
 
+        // Get the ordered list of books based on the selected order
+        if ("title".equals(order)) {
+            orderedBooks = bookService.getBooksOrderedByTitle();
+        } else {
+            // Default order by ID
+            orderedBooks = bookService.getAllBooks();
+        }
+
+        // Add the ordered books to the model
+        model.addAttribute("books", orderedBooks);
+
+        // Add the order value to the model for displaying in the template
+        model.addAttribute("currentOrder", order);
+
+        return "books";
+    }
 
 }

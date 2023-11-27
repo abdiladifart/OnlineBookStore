@@ -1,9 +1,8 @@
 package org.example.Entity;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 public class Author{
@@ -27,4 +26,13 @@ public class Author{
     public String getName() {
         return name;
     }
+
+    // Add a mappedBy attribute to the @ManyToMany annotation
+    @ManyToMany
+    @JoinTable(
+            name = "book_author",
+            joinColumns = @JoinColumn(name = "author_id"),
+            inverseJoinColumns = @JoinColumn(name = "book_id"))
+    private Set<Book> books = new HashSet<>();
+
 }

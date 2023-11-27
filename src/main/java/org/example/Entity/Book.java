@@ -14,11 +14,11 @@ public class Book {
 
     private String title;
 
-    @ManyToMany
     @JoinTable(
             name = "book_author",
             joinColumns = @JoinColumn(name = "book_id"),
             inverseJoinColumns = @JoinColumn(name = "author_id"))
+    @ManyToMany(fetch = FetchType.EAGER)
     private Set<Author> authors = new HashSet<>();
 
     @ManyToOne
@@ -32,9 +32,21 @@ public class Book {
     @Transient
     private Long publisherId;
 
-    private BigDecimal price; // New field
+    private BigDecimal price;
 
-    private Integer publicationYear; // New field
+    private Integer publicationYear;
+
+    @Column(name = "genre", nullable = false)
+    private String genre;
+
+    // Getter and Setter for genre
+    public String getGenre() {
+        return genre;
+    }
+
+    public void setGenre(String genre) {
+        this.genre = genre;
+    }
 
     // Other fields, getters, setters
 
@@ -70,7 +82,6 @@ public class Book {
         this.publisher = publisher;
     }
 
-    // Getter and Setter for authorIds
     public List<Long> getAuthorIds() {
         return authorIds;
     }
@@ -79,9 +90,6 @@ public class Book {
         this.authorIds = authorIds;
     }
 
-
-
-    // Add getter and setter for publisherId
     public Long getPublisherId() {
         return publisherId;
     }
@@ -90,34 +98,19 @@ public class Book {
         this.publisherId = publisherId;
     }
 
-    @Column(name = "genre", nullable = false)
-    private String genre;
-
-    // Getter and Setter for genre
-    public String getGenre() {
-        return genre;
-    }
-
-    public void setGenre(String genre) {
-        this.genre = genre;
+    public BigDecimal getPrice() {
+        return price;
     }
 
     public void setPrice(BigDecimal price) {
         this.price = price;
     }
 
-    public BigDecimal getPrice() {
-        return price;
+    public Integer getPublicationYear() {
+        return publicationYear;
     }
 
     public void setPublicationYear(Integer publicationYear) {
         this.publicationYear = publicationYear;
     }
-
-    public Integer getPublicationYear() {
-        return publicationYear;
-    }
-
 }
-
-

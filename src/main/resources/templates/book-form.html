@@ -2,6 +2,52 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
+    <style>
+        /* Add your CSS styles here */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            margin: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        h2 {
+            color: #2d4059;
+        }
+
+        a {
+            text-decoration: none;
+            color: #54b0ea;
+            margin-right: 10px;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        input[type="text"] {
+            padding: 8px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+
+        .no-results {
+            color: #54b0ea;
+            margin-top: 10px;
+        }
+    </style>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,11 +62,13 @@
     <label for="title">Title:</label>
     <input type="text" id="title" name="title" th:field="*{title}" required>
 
+
+
     <label for="genre">Genre:</label>
     <input type="text" id="genre" name="genre" th:field="*{genre}" required>
 
     <label for="authors">Authors:</label>
-    <select id="authors" name="authorIds" th:field="*{authorIds}" required>
+    <select id="authors" name="authorIds" th:field="*{authorIds}" multiple required>
         <option th:each="author : ${authors}" th:value="${author.id}" th:text="${author.name}"></option>
     </select>
 
