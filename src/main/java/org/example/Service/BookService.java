@@ -6,6 +6,8 @@ import org.example.Entity.Publisher;
 import org.example.Repository.AuthorRepository;
 import org.example.Repository.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -122,13 +124,27 @@ public class BookService {
             bookRepository.save(book);
         }
     }
-    public List<Book> getBooksOrderedByTitle() {
-        // Use the Spring Data JPA repository method to get books ordered by title
-        return bookRepository.findAllByOrderByTitle();
+    public Page<Book> getBooksOrderedByTitle(Pageable pageable) {
+        return bookRepository.findAllByOrderByTitle(pageable);
     }
+
+
     public List<Book> getBooksOrderedById() {
         // Use the Spring Data JPA repository method to get books ordered by ID
         return bookRepository.findAllByOrderById();
+    }
+
+    public Page<Book> getAllBooks(Pageable pageable) {
+        return bookRepository.findAll(pageable);
+    }
+
+
+    public Page<Book> searchBooks(String searchTerm, Pageable pageable) {
+        return bookRepository.searchBooks(searchTerm, pageable);
+    }
+
+    public long countAllBooks() {
+        return bookRepository.count();
     }
 }
 

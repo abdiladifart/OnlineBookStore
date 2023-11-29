@@ -10,6 +10,9 @@ import org.example.Service.AuthorService;
 import org.example.Service.BookService;
 import org.example.Service.PublisherService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -42,17 +45,53 @@ public class BookController {
     private PublisherRepository publisherRepository;
 
     // Display all books
+//    @GetMapping
+//    public String getAllBooks(Model model, @RequestParam(name = "search", required = false) String search, @RequestParam(defaultValue = "0") int page) {
+//        int pageSize = 10;  // Set your desired page size
+//
+//        Pageable pageable = PageRequest.of(page, pageSize);
+//        Page<Book> books;
+//
+//        if (search != null && !search.isEmpty()) {
+//            books = bookService.searchBooks(search, pageable);
+//        } else {
+//            books = bookService.getAllBooks(pageable);
+//        }
+//
+//        model.addAttribute("books", books.getContent());
+//        model.addAttribute("currentPage", page);
+//        model.addAttribute("totalPages", books.getTotalPages());
+//
+//        return "books";
+//    }
     @GetMapping
-    public String getAllBooks(Model model, @RequestParam(name = "search", required = false) String search) {
-        List<Book> books;
+    public String getAllBooks(Model model, @RequestParam(name = "search", required = false) String search, @RequestParam(defaultValue = "0") int page) {
+        int pageSize = 2;  // Set your desired page size
+
+        Pageable pageable = PageRequest.of(page, pageSize);
+        Page<Book> books;
+
         if (search != null && !search.isEmpty()) {
-            books = bookService.searchBooks(search);
+            books = bookService.searchBooks(search, pageable);
         } else {
-            books = bookService.getAllBooks();
+            books = bookService.getAllBooks(pageable);
         }
-        model.addAttribute("books", books);
+
+        model.addAttribute("books", books);  // Ensure "books" is of type Page<Book>
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", books.getTotalPages());
+
+        // Add the total count of books to the model
+        long totalCount = bookService.countAllBooks();
+        model.addAttribute("totalCount", totalCount);
+
         return "books";
     }
+
+
+
+
+
 
 
     // Display form for creating a new book
@@ -138,15 +177,17 @@ public class BookController {
         return "redirect:/books";
     }
     @GetMapping("/order")
-    public String orderBooks(Model model, @RequestParam(name = "order", required = false) String order) {
-        List<Book> orderedBooks;
+    public String orderBooks(Model model, @RequestParam(name = "order", required = false) String order, @RequestParam(defaultValue = "0") int page) {
+        Pageable pageable = PageRequest.of(page, 10); // Assuming a page size of 10, you can adjust it accordingly
+
+        Page<Book> orderedBooks;
 
         // Get the ordered list of books based on the selected order
         if ("title".equals(order)) {
-            orderedBooks = bookService.getBooksOrderedByTitle();
+            orderedBooks = bookService.getBooksOrderedByTitle(pageable);
         } else {
             // Default order by ID
-            orderedBooks = bookService.getAllBooks();
+            orderedBooks = bookService.getAllBooks(pageable);
         }
 
         // Add the ordered books to the model
@@ -156,6 +197,21 @@ public class BookController {
         model.addAttribute("currentOrder", order);
 
         return "books";
+    }
+
+
+    @GetMapping("/books")
+    public Page<Book> searchBooks(
+            @RequestParam String searchTerm,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "2") int size
+    ) {
+        PageRequest pageable = PageRequest.of(page, size);
+        return bookService.searchBooks(searchTerm, pageable);
+    }
+
+    public long countSearchBooks(String searchTerm) {
+        return bookRepository.countSearchBooks(searchTerm);
     }
 
 }

@@ -58,6 +58,28 @@
       margin-top: 10px;
       color: #54b0ea;
     }
+
+    .pagination {
+      margin-top: 20px;
+    }
+
+    .pagination a {
+      display: inline-block;
+      padding: 8px 16px;
+      text-decoration: none;
+      color: #2d4059;
+      background-color: #f8f9fa;
+      border: 1px solid #ddd;
+    }
+
+    .pagination a.active {
+      background-color: #2d4059;
+      color: white;
+    }
+
+    .pagination a:hover:not(.active) {
+      background-color: #ddd;
+    }
   </style>
 </head>
 <body>
@@ -92,7 +114,7 @@
     <th>Operation</th>
   </tr>
 
-  <tr th:each="book, bookIdx : ${books}">
+  <tr th:each="book, bookIdx : ${books.content}">
     <td th:text="${book.id}"></td>
     <td th:text="${book.title}"></td>
     <td th:text="${book.genre}"></td>
@@ -115,8 +137,35 @@
 </div>
 
 <div class="total-books" th:if="${not #lists.isEmpty(books)}">
-  <p>Total books: <span th:text="${#lists.size(books)}"></span></p>
+  <p>Total books: <span th:text="${books.totalElements}"></span></p>
 </div>
+
+
+
+
+<!-- Pagination controls -->
+<div th:if="${books.totalPages gt 1}" class="pagination">
+  <span>Page <span th:text="${currentPage + 1}"></span> of <span th:text="${totalPages}"></span></span>
+  <span th:if="${currentPage > 0}"><a th:href="@{'/books?page=' + ${currentPage - 1}}">Previous</a></span>
+
+  <!-- Display a range of page numbers for better navigation -->
+  <span th:unless="${totalPages le 5}"> <!-- Show all pages if total pages are 5 or fewer -->
+    <span th:if="${currentPage ge 2}">...</span>
+    <span th:each="pageNumber : ${#numbers.sequence(0, totalPages - 1)}" th:if="${pageNumber ge currentPage - 2 and pageNumber le currentPage + 2}">
+      <span th:if="${pageNumber eq currentPage}">
+        <span th:text="${pageNumber + 1}"></span>
+      </span>
+      <span th:unless="${pageNumber eq currentPage}">
+        <a th:href="@{'/books?page=' + ${pageNumber}}" th:text="${pageNumber + 1}"></a>
+      </span>
+    </span>
+    <span th:if="${currentPage le totalPages - 3}">...</span>
+  </span>
+
+  <span th:if="${currentPage < totalPages - 1}"><a th:href="@{'/books?page=' + ${currentPage + 1}}">Next</a></span>
+</div>
+
+
 
 <a th:href="@{/books/new}">Add New Book</a>
 <a th:href="@{/authors}">View Authors</a>
